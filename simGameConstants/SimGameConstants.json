@@ -1,0 +1,12 @@
+{
+	"Travel": {
+		"DefaultSystemTravelTime": 0,
+		"DefaultFuelTime": 0,
+		"FuelStationFuelTime": 0
+	},
+	"Time": {
+		"DayElapseTimeSlow": 0.7,
+		"DayElapseTimeNormal": 0.3,
+		"DayElapseTimeFast": 0.1
+	}
+}
