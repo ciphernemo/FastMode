@@ -1,5 +1,6 @@
-﻿#region USING
+#region USING
 using BattleTech;
+using BattleTech.Rendering;
 using Harmony;
 using System;
 using System.Collections.Generic;
@@ -9,44 +10,40 @@ using System.Reflection;
 using System.Threading.Tasks;
 #endregion
 
-namespace FastMode
+namespace FastMode.Patches
 {
-	//[HarmonyPatch(typeof(DropshipGameLogic))]
-	//[HarmonyPatch(nameof(DropshipGameLogic.StartDropoff), MethodType.Normal)]
-	//public static class DropShipAnimation
-	//{
-	//	public static void Prefix(DropshipGameLogic __instance)
-	//	{
-	//		Traverse.Create(typeof(DropshipGameLogic)).Field("dropoffDropshipAnimationSequence").SetValue(null);
-	//		__instance.startingAnimationState = DropshipAnimationState.OffScreen;
-	//		__instance.currentAnimationState = DropshipAnimationState.OffScreen;
-	//		__instance.SetState(EncounterObjectStatus.Finished);
-	//		__instance.OnEnterFinished();
-	//		__instance.GetMeshRenderer().enabled = false;
-	//		__instance.GetMeshCollider().enabled = false;
-	//		bool flag = __instance.currentAnimationState == DropshipAnimationState.Landed;
-	//		for (int i = 0; i < __instance.buildingDataList.Count; i++)
-	//		{
-	//			__instance.buildingDataList[i].enabled = flag;
-	//		}
-	//		if (__instance.autoMarkDropshipLandingZone)
-	//		{
-	//			__instance.MarkDropshipLandingZone(!flag && true);
-	//		}
-	//		__instance.UpdateRelatedTerrainCells();
-	//		__instance.UpdatePathingNearMe();
-	//	}
-	//}
+	public static class MyVars
+	{
+		public static float timeShort = 0.0001f;
+		public static float fadeNone = 1.0f;
+	}
 
-	//SpawnDropshipForFlyby
+	[HarmonyPatch(typeof(DropshipGameLogic))]
+	[HarmonyPatch(nameof(DropshipGameLogic.AnimationStarted), MethodType.Normal)]
+	public static class DropShipUpdate
+	{
+		public static void Prefix(DropshipGameLogic __instance)
+		{
+			__instance.AnimationComplete();
+		}
+	}
 
-	//[HarmonyPatch(typeof(DropshipAnimationSequence), "Load")]
-	//public static class DropShipAnimation
-	//{
-	//	public static void Prefix()
-	//	{
-	//		// completely skip the dropship animation
-	//		//Traverse.Create(typeof(DropshipAnimationSequence)).Field("DropshipAnimationComplete").SetValue(true);
-	//	}
-	//}
+	[HarmonyPatch(typeof(SimGameCameraController), "TransitionCameraRoomLeopard")]
+	public static class TransitionCameraDropShip
+	{
+		public static void Prefix(float transitionTime)
+		{
+			transitionTime = MyVars.timeShort;
+		}
+	}
+
+	// get rid of all fades (show renders immediately)
+	[HarmonyPatch(typeof(BTPostProcess), "OnRenderImage")]
+	public static class PostProcessFade
+	{
+		public static void Prefix(BTPostProcess __instance)
+		{
+			__instance.fade = MyVars.fadeNone;
+		}
+	}
 }
