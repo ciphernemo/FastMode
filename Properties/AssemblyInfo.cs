@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCompany("ModArmor")]
 [assembly: AssemblyProduct("FastMode")]
-[assembly: AssemblyCopyright("Copyright © 2022 ciphernemo")]
+[assembly: AssemblyCopyright("Copyright © 2022 ciphernemo, open source under GPL 3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
